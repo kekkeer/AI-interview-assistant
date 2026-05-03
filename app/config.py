@@ -9,8 +9,9 @@ class Settings(BaseSettings):
   access_token_expire_minutes: int = 60 * 24
   deepseek_api_key: str = ""
   deepseek_base_url: str = "https://api.deepseek.com"
-
+  author: str = "kekkeer"
   model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 
 settings = Settings()
+

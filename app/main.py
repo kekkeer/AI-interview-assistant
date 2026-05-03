@@ -21,3 +21,11 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 @app.get("/")
 def root():
   return {"message": "AI Interview Assistant is running", "version": "0.1.0"}
+
+@app.get("/ping")
+def ping():
+    return "pong"
+
+@app.get("/hello/{name}")
+def hello(name: str):
+    return {"hello": name}
