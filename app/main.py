@@ -24,4 +24,4 @@ app.include_router(auth.router)
 
 @app.get("/")
 def root(request: Request):
-  return render("base.html", request=request)
+  return render("index.html", request=request)

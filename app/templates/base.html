@@ -10,14 +10,35 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
       <a class="navbar-brand" href="/">{{ request.app.title }}</a>
-      <div class="d-flex">
-        {% if user %}
-        <span class="navbar-text me-3">{{ user.username }}</span>
-        <a class="btn btn-outline-light btn-sm" href="/auth/logout">退出</a>
-        {% else %}
-        <a class="btn btn-outline-light btn-sm me-2" href="/auth/login">登录</a>
-        <a class="btn btn-light btn-sm" href="/auth/register">注册</a>
-        {% endif %}
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/">首页</a>
+          </li>
+          {% if user %}
+          <li class="nav-item">
+            <a class="nav-link" href="#">历史记录</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">数据看板</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/auth/profile">个人中心</a>
+          </li>
+          {% endif %}
+        </ul>
+        <div class="d-flex">
+          {% if user %}
+          <span class="navbar-text me-3">{{ user.username }}</span>
+          <a class="btn btn-outline-light btn-sm" href="/auth/logout">退出</a>
+          {% else %}
+          <a class="btn btn-outline-light btn-sm me-2" href="/auth/login">登录</a>
+          <a class="btn btn-light btn-sm" href="/auth/register">注册</a>
+          {% endif %}
+        </div>
       </div>
     </div>
   </nav>

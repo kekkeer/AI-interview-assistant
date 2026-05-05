@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models import User
-from app.render import render
+from app.render import render, get_current_user
 from app.services.auth_service import hash_password, create_access_token, verify_password
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -66,6 +66,13 @@ def login(
   response = RedirectResponse(url="/", status_code=302)
   response.set_cookie(key="access_token", value=f"Bearer {token}", httponly=True)
   return response
+
+
+@router.get("/profile")
+def profile(request: Request):
+  if not get_current_user(request):
+    return RedirectResponse(url="/auth/login", status_code=302)
+  return render("profile.html", request=request)
 
 
 @router.get("/logout")
