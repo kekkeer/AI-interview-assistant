@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">选择职位</h2>
+
+<div class="row g-4">
+  {% for pos in positions %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">{{ pos.title }}</h5>
+        <p class="card-text text-muted small">{{ pos.description }}</p>
+        <a href="#" class="btn btn-primary btn-sm">开始面试</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
