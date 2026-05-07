@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">{{ position.title }} 面试题</h2>
+
+{% for q in interview.questions %}
+<div class="card mb-3">
+  <div class="card-body">
+    <h6 class="card-subtitle mb-2 text-muted">第 {{ q.order }} 题</h6>
+    <p class="card-text">{{ q.content }}</p>
+  </div>
+</div>
+{% endfor %}
+
+<div class="text-center mt-4">
+  <a href="#" class="btn btn-primary btn-lg">开始作答</a>
+</div>
+{% endblock %}
