@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">{{ position_title }} 面试结果</h2>
+
+<div class="card mb-4 text-center">
+  <div class="card-body">
+    <h5 class="card-title">总分</h5>
+    <p class="display-3 {% if interview.total_score and interview.total_score >= 60 %}text-success{% else %}text-danger{% endif %}">
+      {{ interview.total_score or "评分中" }}
+    </p>
+    <p class="text-muted">满分 100 分</p>
+  </div>
+</div>
+
+{% for q in questions %}
+<div class="card mb-3">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span>第 {{ q.order }} 题</span>
+    {% if q.score is not none %}
+    <span class="badge {% if q.score >= 60 %}bg-success{% else %}bg-danger{% endif %} fs-6">{{ q.score }} 分</span>
+    {% endif %}
+  </div>
+  <div class="card-body">
+    <p class="fw-bold">{{ q.content }}</p>
+
+    <div class="mb-3">
+      <small class="text-muted">你的回答：</small>
+      <p class="card-text bg-light p-3 rounded">{{ q.answer or "(未作答)" }}</p>
+    </div>
+
+    {% if q.comment %}
+    <div>
+      <small class="text-muted">AI 评语：</small>
+      <p class="card-text text-muted">{{ q.comment }}</p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+
+<div class="text-center mt-4">
+  <a href="/positions/" class="btn btn-primary">再练一次</a>
+</div>
+{% endblock %}

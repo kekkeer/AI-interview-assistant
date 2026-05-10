@@ -6,6 +6,7 @@ from app.database import get_db
 from app.models import Interview, Question
 from app.render import render, get_current_user
 from app.services.ai_service import generate_questions
+from app.services.scoring_service import score_interview
 
 router = APIRouter(prefix="/interview", tags=["interview"])
 
@@ -93,8 +94,53 @@ def submit_interview(
     db.commit()
 
   interview = db.query(Interview).filter(Interview.id == id).first()
-  if interview:
+  if not interview:
+    return RedirectResponse(url="/positions/", status_code=302)
+
+  all_questions = db.query(Question).filter(Question.interview_id == id).order_by(Question.order).all()
+  title = interview.position.title if interview.position else ""
+
+  try:
+    result = score_interview(title, [
+      {"order": q.order, "content": q.content, "answer": q.answer or ""}
+      for q in all_questions
+    ])
+
+    total = 0
+    for s in result.get("scores", []):
+      question = next((q for q in all_questions if q.order == s["order"]), None)
+      if question:
+        question.score = s["score"]
+        question.comment = s.get("comment", "")
+        total += s["score"]
+
+    interview.total_score = round(total / len(all_questions), 1) if all_questions else 0
+    interview.status = "completed"
+    db.commit()
+  except RuntimeError as e:
     interview.status = "completed"
     db.commit()
 
   return RedirectResponse(url=f"/interview/{id}/result", status_code=302)
+
+
+@router.get("/{id}/result")
+def interview_result(id: int, request: Request, db: Session = Depends(get_db)):
+  user = get_current_user(request)
+  if not user:
+    return RedirectResponse(url="/auth/login", status_code=302)
+
+  interview = db.query(Interview).filter(Interview.id == id, Interview.user_id == user.id).first()
+  if not interview:
+    return RedirectResponse(url="/positions/", status_code=302)
+
+  questions = db.query(Question).filter(Question.interview_id == id).order_by(Question.order).all()
+  position_title = interview.position.title if interview.position else ""
+
+  return render(
+    "interview/result.html",
+    request=request,
+    interview=interview,
+    questions=questions,
+    position_title=position_title,
+  )
