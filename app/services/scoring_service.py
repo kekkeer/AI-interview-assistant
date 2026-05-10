@@ -30,8 +30,9 @@ def score_interview(title: str, questions: list[dict]) -> dict:
 - 表达：回答是否清晰有条理  
 - 逻辑：论证是否严谨
 - 实用：解决方案是否可行
+- 创新：回答是否有独特见解
 
-每题得分 = (depth + expression + logic + practical) / 4 * 20（百分制）
+每题得分 = (depth + expression + logic + practical + innovative) / 5 * 20（百分制）
 
 必须按以下 JSON 格式返回（不要markdown代码块，只返回纯JSON）：
 {{

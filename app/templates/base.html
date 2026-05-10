@@ -15,6 +15,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto">
+          {% block nav_items %}
           <li class="nav-item">
             <a class="nav-link" href="/">首页</a>
           </li>
@@ -26,6 +27,7 @@
             <a class="nav-link" href="/auth/profile">个人中心</a>
           </li>
           {% endif %}
+          {% endblock %}
         </ul>
         <div class="d-flex">
           {% if user %}

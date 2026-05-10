@@ -34,6 +34,8 @@
           hx-post="/interview/{{ interview_id }}/submit"
           hx-include="closest form"
           hx-vals='{"question_id": {{ question.id }}}'
+          hx-indicator="#loading"
+          hx-disabled-elt="this"
           class="btn btn-success ms-auto">提交全部答案</button>
         {% endif %}
       </div>

@@ -1,7 +1,19 @@
 {% extends "base.html" %}
 
+{% block nav_items %}
+<li class="nav-item">
+  <a class="nav-link" href="/">首页</a>
+</li>
+{% if user %}
+<li class="nav-item">
+  <a class="nav-link" href="/auth/profile">个人中心</a>
+</li>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <h2 class="mb-4">{{ position_title }} 面试结果</h2>
+<p class="text-muted small">评分由 AI 生成，仅供参考。</p>
 
 <div class="card mb-4 text-center">
   <div class="card-body">
