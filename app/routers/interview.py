@@ -33,6 +33,7 @@ def take_interview(id: int, request: Request, db: Session = Depends(get_db)):
     question=questions[0],
     total=len(questions),
     position_title=position_title,
+    interview_id=interview.id,
   )
 
 
