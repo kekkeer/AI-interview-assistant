@@ -1,0 +1,42 @@
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="badge bg-primary">第 {{ question.order }} 题 / 共 {{ total }} 题</span>
+    </div>
+    <p class="card-text fs-5 mb-4">{{ question.content }}</p>
+
+    <form id="answer-form">
+      <textarea name="answer" class="form-control" rows="6" placeholder="请输入你的回答...">{{ question.answer or "" }}</textarea>
+    </form>
+
+    <div class="mt-4 d-flex justify-content-between">
+      {% if question.order > 1 %}
+      <button
+        hx-post="/interview/{{ interview_id }}/answer"
+        hx-include="#answer-form"
+        hx-target="#question-card"
+        hx-swap="outerHTML"
+        hx-vals='{"question_id": {{ question.id }}, "direction": "prev"}'
+        class="btn btn-outline-secondary">上一题</button>
+      {% else %}
+      <div></div>
+      {% endif %}
+
+      {% if question.order < total %}
+      <button
+        hx-post="/interview/{{ interview_id }}/answer"
+        hx-include="#answer-form"
+        hx-target="#question-card"
+        hx-swap="outerHTML"
+        hx-vals='{"question_id": {{ question.id }}, "direction": "next"}'
+        class="btn btn-primary">下一题</button>
+      {% else %}
+      <button
+        hx-post="/interview/{{ interview_id }}/submit"
+        hx-include="#answer-form"
+        hx-vals='{"question_id": {{ question.id }}}'
+        class="btn btn-success">提交全部答案</button>
+      {% endif %}
+    </div>
+  </div>
+</div>
