@@ -41,7 +41,7 @@
           {% endif %}
         </td>
         <td>{{ iv.total_score or "-" }}</td>
-        <td class="text-muted small">{{ iv.created_at }}</td>
+        <td class="text-muted small">{{ iv.created_at | dt }}</td>
         <td>
           <a href="/interview/{{ iv.id }}/result" class="btn btn-sm btn-outline-primary">查看</a>
         </td>

@@ -12,6 +12,13 @@ _env = jinja2.Environment(
   autoescape=jinja2.select_autoescape(),
 )
 
+def format_dt(dt):
+  if dt is None:
+    return ""
+  return dt.strftime("%Y-%m-%d %H:%M")
+
+_env.filters["dt"] = format_dt
+
 
 def get_current_user(request: Request):
   token_str = request.cookies.get("access_token", "")
