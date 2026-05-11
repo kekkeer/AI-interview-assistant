@@ -3,12 +3,35 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.models import Interview, Question
+from app.models import Interview, Question, Position
 from app.render import render, get_current_user
 from app.services.ai_service import generate_questions
 from app.services.scoring_service import score_interview
 
 router = APIRouter(prefix="/interview", tags=["interview"])
+PER_PAGE = 10
+
+
+@router.get("/history")
+def history(request: Request, page: int = 1, position_id: int | None = None, db: Session = Depends(get_db)):
+  user = get_current_user(request)
+  if not user:
+    return RedirectResponse(url="/auth/login", status_code=302)
+
+  q = db.query(Interview).filter(Interview.user_id == user.id)
+  if position_id:
+    q = q.filter(Interview.position_id == position_id)
+
+  total = q.count()
+  total_pages = max(1, (total + PER_PAGE - 1) // PER_PAGE)
+  page = max(1, min(page, total_pages))
+
+  interviews = q.order_by(Interview.created_at.desc()).offset((page - 1) * PER_PAGE).limit(PER_PAGE).all()
+  all_positions = db.query(Position).order_by(Position.id).all()
+
+  return render("history.html", request=request,
+    interviews=interviews, all_positions=all_positions,
+    page=page, total_pages=total_pages, position_id=position_id)
 
 
 @router.get("/{id}/take")
