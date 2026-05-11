@@ -36,6 +36,15 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
   ).order_by(Interview.created_at).limit(15).all()
   scores = [r[0] for r in recent if r[0] is not None]
 
+  bar_data = db.query(
+    Position.title, func.avg(Interview.total_score)
+  ).join(Position, Interview.position_id == Position.id).filter(
+    Interview.user_id == user.id, Interview.status == "completed"
+  ).group_by(Position.title).all()
+  bar_labels = [r[0] for r in bar_data]
+  bar_values = [round(r[1], 1) for r in bar_data]
+
   return render("dashboard.html", request=request,
     total=total, avg_score=avg_score, max_score=max_score,
-    distribution=distribution, scores=scores)
+    distribution=distribution, scores=scores,
+    bar_labels=bar_labels, bar_values=bar_values)
