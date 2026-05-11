@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">数据看板</h2>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-4">
+    <div class="card text-center h-100">
+      <div class="card-body">
+        <h5 class="card-title text-muted">总面试次数</h5>
+        <p class="display-4">{{ total }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-center h-100">
+      <div class="card-body">
+        <h5 class="card-title text-muted">平均分</h5>
+        <p class="display-4 {% if avg_score >= 60 %}text-success{% else %}text-danger{% endif %}">{{ avg_score }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-center h-100">
+      <div class="card-body">
+        <h5 class="card-title text-muted">最高分</h5>
+        <p class="display-4 text-primary">{{ max_score }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h5 class="mb-3">各职位面试次数</h5>
+<table class="table">
+  <thead class="table-light">
+    <tr>
+      <th>职位</th>
+      <th>次数</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for title, count in distribution %}
+    <tr>
+      <td>{{ title }}</td>
+      <td>{{ count }}</td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="2" class="text-muted text-center">暂无数据</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
