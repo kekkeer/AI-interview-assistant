@@ -34,7 +34,7 @@ def dashboard(request: Request, db: Session = Depends(get_db)):
   recent = db.query(Interview.total_score).filter(
     Interview.user_id == user.id, Interview.status == "completed"
   ).order_by(Interview.created_at).limit(15).all()
-  scores = [r[0] for r in recent]
+  scores = [r[0] for r in recent if r[0] is not None]
 
   return render("dashboard.html", request=request,
     total=total, avg_score=avg_score, max_score=max_score,
