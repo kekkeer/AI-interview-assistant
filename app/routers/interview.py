@@ -13,14 +13,15 @@ PER_PAGE = 10
 
 
 @router.get("/history")
-def history(request: Request, page: int = 1, position_id: int | None = None, db: Session = Depends(get_db)):
+def history(request: Request, page: int = 1, position_id: str = "", db: Session = Depends(get_db)):
   user = get_current_user(request)
   if not user:
     return RedirectResponse(url="/auth/login", status_code=302)
 
   q = db.query(Interview).filter(Interview.user_id == user.id)
-  if position_id:
-    q = q.filter(Interview.position_id == position_id)
+  pid = int(position_id) if position_id and position_id.isdigit() else None
+  if pid:
+    q = q.filter(Interview.position_id == pid)
 
   total = q.count()
   total_pages = max(1, (total + PER_PAGE - 1) // PER_PAGE)
@@ -31,7 +32,7 @@ def history(request: Request, page: int = 1, position_id: int | None = None, db:
 
   return render("history.html", request=request,
     interviews=interviews, all_positions=all_positions,
-    page=page, total_pages=total_pages, position_id=position_id)
+    page=page, total_pages=total_pages, position_id=pid)
 
 
 @router.get("/{id}/take")
