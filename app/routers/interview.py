@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Form, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, Response
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -145,6 +145,10 @@ def submit_interview(
     interview.status = "completed"
     db.commit()
 
+  if request.headers.get("HX-Request") == "true":
+    resp = Response(status_code=200)
+    resp.headers["HX-Redirect"] = f"/interview/{id}/result"
+    return resp
   return RedirectResponse(url=f"/interview/{id}/result", status_code=302)
 
 
