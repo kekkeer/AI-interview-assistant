@@ -83,10 +83,11 @@ def change_password(
   confirm_new_password: str = Form(...),
   db: Session = Depends(get_db),
 ):
-  user = get_current_user(request)
-  if not user:
+  current_user = get_current_user(request)
+  if not current_user:
     return RedirectResponse(url="/auth/login", status_code=302)
 
+  user = db.query(User).filter(User.id == current_user.id).first()
   if not verify_password(old_password, user.hashed_password):
     return render("profile.html", request=request, error="当前密码不正确")
 
