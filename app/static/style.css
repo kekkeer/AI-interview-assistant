@@ -39,7 +39,7 @@ a { color: var(--primary); transition: color .2s; }
 a:hover { color: var(--primary-hover); }
 
 /* 首页 */
-.hero { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border-radius: 20px; padding: 60px 40px; }
+.hero { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); border-radius: 20px; }
 
 /* 答题页 */
 .score-display { font-size: 4rem; font-weight: 800; background: linear-gradient(135deg, var(--primary), #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
