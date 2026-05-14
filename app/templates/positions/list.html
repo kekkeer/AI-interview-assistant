@@ -6,6 +6,10 @@
   <a href="/positions/create" class="btn btn-outline-primary">+ 自定义职位</a>
 </div>
 
+{% if error %}
+<div class="alert alert-danger alert-dismissible">{{ error }}</div>
+{% endif %}
+
 <div class="row g-4">
   {% for pos in positions %}
   <div class="col-md-6 col-lg-4">
