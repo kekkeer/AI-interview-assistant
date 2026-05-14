@@ -1,14 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row justify-content-center" style="margin-top:6vh">
+<div class="row justify-content-center" style="margin-top:4vh">
   <div class="col-md-5">
     <div class="auth-card">
-      <h3 class="mb-1 fw-bold">创建账号</h3>
-      <p class="text-muted mb-4">注册后即可开始 AI 模拟面试</p>
+      <div class="text-center mb-4">
+        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" style="width:56px;height:56px;background:linear-gradient(135deg,#eef2ff,#ede9fe)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        </div>
+        <h4 class="fw-bold mb-1">创建账号</h4>
+        <p class="text-muted small mb-0">注册后即可开始 AI 模拟面试</p>
+      </div>
 
       {% if error %}
-      <div class="alert alert-danger py-2">{{ error }}</div>
+      <div class="alert alert-danger py-2 small mb-3">{{ error }}</div>
       {% endif %}
 
       <form method="post" action="/auth/register">
@@ -28,13 +33,17 @@
           <label class="form-label small fw-medium">确认密码</label>
           <input type="password" name="confirm_password" class="form-control" placeholder="再次输入密码" required>
         </div>
-        <button type="submit" class="btn btn-primary w-100 py-2">注册</button>
+        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" style="background:linear-gradient(135deg,#4f46e5,#6366f1);border:none">注册</button>
       </form>
 
-      <p class="mt-4 text-center text-muted small">
-        已有账号？<a href="/auth/login" class="fw-medium">去登录</a>
-      </p>
+      <div class="text-center mt-4 pt-3" style="border-top:1px solid #f0f0f2">
+        <p class="text-muted small mb-0">
+          已有账号？<a href="/auth/login" class="fw-semibold text-decoration-none">去登录</a>
+        </p>
+      </div>
     </div>
+
+    <p class="text-center text-muted small mt-3 opacity-50">AI 面试助手 · 模拟真实面试场景</p>
   </div>
 </div>
 {% endblock %}
