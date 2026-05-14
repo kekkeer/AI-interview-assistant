@@ -75,6 +75,29 @@ def profile(request: Request):
   return render("profile.html", request=request)
 
 
+@router.post("/change-password")
+def change_password(
+  request: Request,
+  old_password: str = Form(...),
+  new_password: str = Form(...),
+  confirm_new_password: str = Form(...),
+  db: Session = Depends(get_db),
+):
+  user = get_current_user(request)
+  if not user:
+    return RedirectResponse(url="/auth/login", status_code=302)
+
+  if not verify_password(old_password, user.hashed_password):
+    return render("profile.html", request=request, error="当前密码不正确")
+
+  if new_password != confirm_new_password:
+    return render("profile.html", request=request, error="两次新密码不一致")
+
+  user.hashed_password = hash_password(new_password)
+  db.commit()
+  return render("profile.html", request=request, success="密码修改成功")
+
+
 @router.get("/logout")
 def logout(request: Request):
   response = RedirectResponse(url="/", status_code=302)

@@ -5,7 +5,14 @@
   <div class="col-md-8">
     <h2 class="mb-4">个人中心</h2>
 
-    <div class="card">
+    {% if success %}
+    <div class="alert alert-success">{{ success }}</div>
+    {% endif %}
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <div class="card mb-4">
       <div class="card-body">
         <dl class="row mb-0">
           <dt class="col-sm-3">用户名</dt>
@@ -17,6 +24,27 @@
           <dt class="col-sm-3">注册时间</dt>
           <dd class="col-sm-9">{{ user.created_at | dt }}</dd>
         </dl>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">修改密码</div>
+      <div class="card-body">
+        <form method="post" action="/auth/change-password">
+          <div class="mb-3">
+            <label class="form-label">当前密码</label>
+            <input type="password" name="old_password" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">新密码</label>
+            <input type="password" name="new_password" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">确认新密码</label>
+            <input type="password" name="confirm_new_password" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary">修改密码</button>
+        </form>
       </div>
     </div>
   </div>
