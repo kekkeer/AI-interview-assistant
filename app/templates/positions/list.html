@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h2 class="mb-0">选择职位</h2>
+<div class="d-flex justify-content-between align-items-end mb-2">
+  <div>
+    <h2 class="fw-bold mb-1">选择职位</h2>
+    <p class="text-muted small mb-0">选择一个岗位开始 AI 模拟面试</p>
+  </div>
   <a href="/positions/create" class="btn btn-outline-primary">+ 自定义职位</a>
 </div>
 
@@ -10,20 +13,22 @@
 <div class="alert alert-danger alert-dismissible">{{ error }}</div>
 {% endif %}
 
-<div class="row g-4">
-  {% for pos in positions %}
-  <div class="col-md-6 col-lg-4">
-    <div class="card h-100 border-0 shadow-sm">
-      <div class="card-body py-3">
-        <div class="d-flex justify-content-between align-items-start mb-1">
-          <h5 class="card-title mb-0">{{ pos.title }}</h5>
-          {% if pos.is_builtin %}<span class="badge bg-light text-muted" style="font-size:11px">内置</span>{% endif %}
+<div class="rounded-4 p-4" style="background:#f0f0f5">
+  <div class="row g-3">
+    {% for pos in positions %}
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 border-0 shadow-sm">
+        <div class="card-body py-3">
+          <div class="d-flex justify-content-between align-items-start mb-1">
+            <h5 class="card-title mb-0 fw-bold">{{ pos.title }}</h5>
+            {% if pos.is_builtin %}<span class="badge bg-light text-muted" style="font-size:11px">内置</span>{% endif %}
+          </div>
+          <p class="card-text text-muted small mb-3">{{ pos.description }}</p>
+          <a href="/positions/{{ pos.id }}" class="btn btn-primary btn-sm px-3">开始面试</a>
         </div>
-        <p class="card-text text-muted small mb-2">{{ pos.description }}</p>
-        <a href="/positions/{{ pos.id }}" class="btn btn-primary btn-sm">开始面试</a>
       </div>
     </div>
+    {% endfor %}
   </div>
-  {% endfor %}
 </div>
 {% endblock %}
