@@ -19,6 +19,7 @@ USER_PROMPT_TEMPLATE = """职位名称：{title}
 职位描述：{description}
 
 请针对上述职位，生成 {count} 道面试题。
+{avoid_text}
 
 必须按以下 JSON 格式返回（不要markdown代码块，只返回纯JSON）：
 {{
@@ -30,15 +31,19 @@ USER_PROMPT_TEMPLATE = """职位名称：{title}
 """
 
 
-def generate_questions(title: str, description: str, count: int = 5) -> list[dict]:
+def generate_questions(title: str, description: str, count: int = 5, avoid: list[str] | None = None) -> list[dict]:
+  avoid_text = ""
+  if avoid:
+    avoid_text = "以下题目已经出过，请避免重复：\n" + "\n".join(f"- {q}" for q in avoid)
+
   try:
     resp = client.chat.completions.create(
       model="deepseek-chat",
       messages=[
         {"role": "system", "content": SYSTEM_PROMPT},
-        {"role": "user", "content": USER_PROMPT_TEMPLATE.format(title=title, description=description, count=count)},
+        {"role": "user", "content": USER_PROMPT_TEMPLATE.format(title=title, description=description, count=count, avoid_text=avoid_text)},
       ],
-      temperature=0.7,
+      temperature=1.0,
     )
     raw = resp.choices[0].message.content or ""
     return _parse_questions(raw, count)

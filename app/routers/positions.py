@@ -51,13 +51,19 @@ def position_detail(id: int, request: Request, db: Session = Depends(get_db)):
   if not position:
     return render("positions/list.html", request=request, positions=[], error="职位不存在")
 
+  existing = db.query(Question.content).join(Interview).filter(
+    Interview.user_id == user.id, Interview.position_id == id,
+    Interview.status == "completed"
+  ).all()
+  avoid_list = [q[0] for q in existing]
+
   interview = Interview(user_id=user.id, position_id=id)
   db.add(interview)
   db.commit()
   db.refresh(interview)
 
   try:
-    questions_data = generate_questions(position.title, position.description)
+    questions_data = generate_questions(position.title, position.description, avoid=avoid_list)
   except RuntimeError as e:
     return render("positions/list.html", request=request, positions=[], error=str(e))
 
