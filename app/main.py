@@ -2,6 +2,7 @@ import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.config import settings
@@ -29,6 +30,14 @@ app.include_router(positions.router)
 app.include_router(interview.router)
 app.include_router(dashboard.router)
 
+
+@app.exception_handler(404)
+async def not_found(request: Request, exc):
+  return HTMLResponse(content=render("error.html", request=request, code=404, message="页面不存在").body, status_code=404)
+
+@app.exception_handler(500)
+async def server_error(request: Request, exc):
+  return HTMLResponse(content=render("error.html", request=request, code=500, message="服务器内部错误").body, status_code=500)
 
 @app.get("/")
 def root(request: Request):

@@ -1,3 +1,5 @@
 .htmx-indicator { display: none; }
 .htmx-request .htmx-indicator { display: block; }
 .htmx-request.htmx-indicator { display: block; }
+
+.alert-dismissible { position: fixed; top: 70px; right: 20px; z-index: 9999; max-width: 400px; }
