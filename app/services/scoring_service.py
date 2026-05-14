@@ -1,7 +1,7 @@
 import json
 import re
 
-from openai import OpenAI
+from openai import OpenAI, APIConnectionError, AuthenticationError, APITimeoutError
 
 from app.config import settings
 
@@ -55,8 +55,12 @@ def score_interview(title: str, questions: list[dict]) -> dict:
     )
     raw = resp.choices[0].message.content or ""
     return _parse_scores(raw)
+  except AuthenticationError:
+    raise RuntimeError("API Key 无效，请在 .env 中设置正确的 DEEPSEEK_API_KEY")
+  except (APIConnectionError, APITimeoutError):
+    raise RuntimeError("网络连接失败，请检查网络后重试")
   except Exception as e:
-    raise RuntimeError(f"AI 评分调用失败: {e}")
+    raise RuntimeError(f"AI 评分失败: {e}")
 
 
 def _parse_scores(raw: str) -> dict:
