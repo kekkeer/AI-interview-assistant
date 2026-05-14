@@ -13,8 +13,8 @@
 <div class="row g-4">
   {% for pos in positions %}
   <div class="col-md-6 col-lg-4">
-    <div class="card h-100">
-      <div class="card-body">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body py-3">
         <h5 class="card-title">{{ pos.title }}</h5>
         <p class="card-text text-muted small">{{ pos.description }}</p>
        <a href="/positions/{{ pos.id }}" class="btn btn-primary btn-sm">开始面试</a>
