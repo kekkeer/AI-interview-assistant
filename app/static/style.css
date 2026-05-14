@@ -48,6 +48,14 @@ a:hover { color: var(--primary-hover); }
 .htmx-request.htmx-indicator { display: block; }
 
 .alert-dismissible { position: fixed; top: 70px; right: 20px; z-index: 9999; max-width: 400px; }
+
+.auth-card {
+  box-shadow: 0 20px 60px rgba(79,70,229,.15);
+  border-radius: 20px;
+  padding: 40px;
+  background: linear-gradient(white,white) padding-box, linear-gradient(135deg,#4f46e5,#7c3aed) border-box;
+  border: 2px solid transparent;
+}
 .feature-card { transition: transform .2s, box-shadow .2s; }
 .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,.12) !important; }
 .btn-hero { transition: all .2s; }
