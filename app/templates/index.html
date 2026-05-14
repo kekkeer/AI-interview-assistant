@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="text-center py-5">
-  <h1 class="display-4">面试训练营</h1>
-  <p class="lead text-muted">基于 DeepSeek API 的智能模拟面试，帮你准备每一次面试</p>
+<div class="hero text-white rounded-4 p-5 text-center mb-4">
+  <h1 class="display-4 fw-bold">面试训练营</h1>
+  <p class="lead opacity-75">基于 DeepSeek API 的智能模拟面试，帮你准备每一次面试</p>
 
   {% if user %}
-  <a href="/positions/" class="btn btn-primary btn-lg mt-3">开始面试</a>
+  <a href="/positions/" class="btn btn-light btn-lg btn-hero text-primary fw-bold mt-3 px-5">开始面试</a>
   {% else %}
-  <a href="/auth/register" class="btn btn-primary btn-lg mt-3">注册并开始练习</a>
-  <p class="mt-2 text-muted">已有账号？<a href="/auth/login">去登录</a></p>
+  <a href="/auth/register" class="btn btn-light btn-lg btn-hero text-primary fw-bold mt-3 px-5">注册并开始练习</a>
+  <p class="mt-3 opacity-75">已有账号？<a href="/auth/login" class="text-white fw-bold">去登录</a></p>
   {% endif %}
 </div>
 
-<div class="row g-4 mt-2">
+<div class="row g-4">
   <div class="col-md-6 col-lg-3">
-    <div class="card h-100">
+    <div class="card h-100 border-0 shadow-sm feature-card">
       <div class="card-body text-center">
         <h5 class="card-title">AI 出题</h5>
         <p class="card-text text-muted">根据职位要求自动生成 5 道面试题</p>
@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="col-md-6 col-lg-3">
-    <div class="card h-100">
+    <div class="card h-100 border-0 shadow-sm feature-card">
       <div class="card-body text-center">
         <h5 class="card-title">逐题作答</h5>
         <p class="card-text text-muted">每题独立作答，支持跳题回顾</p>
@@ -31,7 +31,7 @@
     </div>
   </div>
   <div class="col-md-6 col-lg-3">
-    <div class="card h-100">
+    <div class="card h-100 border-0 shadow-sm feature-card">
       <div class="card-body text-center">
         <h5 class="card-title">AI 评分</h5>
         <p class="card-text text-muted">4 维度深度评分 + 针对性建议</p>
@@ -39,7 +39,7 @@
     </div>
   </div>
   <div class="col-md-6 col-lg-3">
-    <div class="card h-100">
+    <div class="card h-100 border-0 shadow-sm feature-card">
       <div class="card-body text-center">
         <h5 class="card-title">数据看板</h5>
         <p class="card-text text-muted">追踪进步趋势，发现薄弱环节</p>
