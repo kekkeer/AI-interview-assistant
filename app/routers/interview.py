@@ -167,4 +167,5 @@ def interview_result(id: int, request: Request, db: Session = Depends(get_db)):
     interview=interview,
     questions=questions,
     position_title=position_title,
+    position_id=interview.position_id,
   )
