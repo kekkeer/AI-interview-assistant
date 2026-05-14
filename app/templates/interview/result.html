@@ -15,11 +15,17 @@
 <h2 class="mb-4">{{ position_title }} 面试结果</h2>
 <p class="text-muted small">评分由 AI 生成，仅供参考。</p>
 
+{% if error %}
+<div class="alert alert-danger alert-dismissible">
+  <strong>评分失败：</strong>{{ error }}
+</div>
+{% endif %}
+
 <div class="card mb-4 text-center">
   <div class="card-body">
     <h5 class="card-title">总分</h5>
     <p class="display-3 {% if interview.total_score and interview.total_score >= 60 %}text-success{% else %}text-danger{% endif %}">
-      {{ interview.total_score or "评分中" }}
+      {% if error %}N/A{% elif interview.total_score %}{{ interview.total_score }}{% else %}评分中{% endif %}
     </p>
     <p class="text-muted">满分 100 分</p>
   </div>

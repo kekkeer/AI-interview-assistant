@@ -1,3 +1,5 @@
+import urllib.parse
+
 from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import RedirectResponse, Response
 from sqlalchemy.orm import Session
@@ -124,6 +126,8 @@ def submit_interview(
   all_questions = db.query(Question).filter(Question.interview_id == id).order_by(Question.order).all()
   title = interview.position.title if interview.position else ""
 
+  error_msg = ""
+
   try:
     result = score_interview(title, [
       {"order": q.order, "content": q.content, "answer": q.answer or ""}
@@ -142,18 +146,23 @@ def submit_interview(
     interview.status = "completed"
     db.commit()
   except RuntimeError as e:
+    error_msg = str(e)
     interview.status = "completed"
     db.commit()
 
+  redirect_url = f"/interview/{id}/result"
+  if error_msg:
+    redirect_url += f"?error={urllib.parse.quote(error_msg)}"
+
   if request.headers.get("HX-Request") == "true":
     resp = Response(status_code=200)
-    resp.headers["HX-Redirect"] = f"/interview/{id}/result"
+    resp.headers["HX-Redirect"] = redirect_url
     return resp
-  return RedirectResponse(url=f"/interview/{id}/result", status_code=302)
+  return RedirectResponse(url=redirect_url, status_code=302)
 
 
 @router.get("/{id}/result")
-def interview_result(id: int, request: Request, db: Session = Depends(get_db)):
+def interview_result(id: int, request: Request, error: str = "", db: Session = Depends(get_db)):
   user = get_current_user(request)
   if not user:
     return RedirectResponse(url="/auth/login", status_code=302)
@@ -172,4 +181,5 @@ def interview_result(id: int, request: Request, db: Session = Depends(get_db)):
     questions=questions,
     position_title=position_title,
     position_id=interview.position_id,
+    error=error,
   )
