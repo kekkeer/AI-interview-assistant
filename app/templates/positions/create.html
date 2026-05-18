@@ -7,7 +7,7 @@
 
     <p class="text-muted">填写职位名称和要求，AI 将根据你的描述生成面试题。</p>
 
-    <form method="post" action="/positions/create">
+    <form method="post" action="/positions/create" onsubmit="this.querySelector('button[type=submit]').disabled=true;this.querySelector('button[type=submit]').innerHTML='<span class=spinner-border spinner-border-sm me-2></span>创建中...'">
       <div class="mb-3">
         <label class="form-label">职位名称</label>
         <input type="text" name="title" class="form-control" required>
