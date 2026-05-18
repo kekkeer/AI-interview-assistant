@@ -24,7 +24,7 @@
             {% if pos.is_builtin %}<span class="badge bg-light text-muted" style="font-size:11px">内置</span>{% endif %}
           </div>
           <p class="card-text text-muted small mb-3">{{ pos.description }}</p>
-          <a href="/positions/{{ pos.id }}" class="btn btn-primary btn-sm px-3">开始面试</a>
+          <a href="/positions/{{ pos.id }}" class="btn btn-primary btn-sm px-3" onclick="this.innerHTML='<span class=spinner-border spinner-border-sm></span> 生成中...';this.style.pointerEvents='none'">开始面试</a>
         </div>
       </div>
     </div>
