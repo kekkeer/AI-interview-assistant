@@ -54,7 +54,7 @@ cp .env.example .env
 uvicorn app.main:app --reload
 ```
 
-访问 http://localhost:8001
+
 
 ---
 
