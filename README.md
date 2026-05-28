@@ -116,9 +116,12 @@ ai-interview/
 ## 截图
 
 ![首页](docs/首页.png)
+![职位列表](docs/自定义职位.png)
 ![答题页](docs/答题页.png)
 ![结果页](docs/结果页.png)
 ![数据看板](docs/数据看板.png)
+![简历面试](docs/简历面试.png)
+![答题评分页](docs/答题评分页.png)
 
 ---
 
