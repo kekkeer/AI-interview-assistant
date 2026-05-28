@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="fw-bold mb-1">简历面试结果</h2>
+<p class="text-muted small mb-4">基于「{{ filename }}」生成</p>
+
+<div class="card border-0 shadow-sm rounded-4 mb-4 text-center p-4">
+  <h5 class="text-muted mb-1">总分</h5>
+  <p class="display-3 fw-bold {% if total_score >= 60 %}text-success{% else %}text-danger{% endif %} mb-0">{{ total_score }}</p>
+</div>
+
+{% for q in results %}
+<div class="card border-0 shadow-sm rounded-4 mb-3">
+  <div class="card-header bg-transparent d-flex justify-content-between align-items-center py-2">
+    <span class="fw-medium">第 {{ q.order }} 题</span>
+    <span class="badge {% if q.score >= 60 %}bg-success{% else %}bg-danger{% endif %} rounded-pill">{{ q.score }} 分</span>
+  </div>
+  <div class="card-body py-3">
+    <p class="fw-medium mb-2">{{ q.content }}</p>
+    <div class="bg-light rounded p-3 mb-2">
+      <small class="text-muted">你的回答：</small>
+      <p class="mb-0 small">{{ q.answer or "(未作答)" }}</p>
+    </div>
+    {% if q.comment %}
+    <small class="text-muted">AI 评语：</small>
+    <p class="text-muted small mb-0">{{ q.comment }}</p>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+
+<div class="text-center mt-4">
+  <a href="/resume/" class="btn btn-outline-primary px-4">返回简历页面</a>
+</div>
+{% endblock %}

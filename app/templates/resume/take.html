@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mb-3">
+  <h4 class="fw-bold mb-1">简历面试</h4>
+  <p class="text-muted small mb-0">基于「{{ filename }}」生成 · 请逐题作答</p>
+</div>
+
+<form method="post" action="/resume/submit"
+      onsubmit="var btn=this.querySelector('button[type=submit]');btn.disabled=true;btn.innerHTML='<span class=spinner-border spinner-border-sm me-2></span>AI 评分中...'">
+  {% for q in questions %}
+  <div class="card border-0 shadow-sm rounded-4 mb-3">
+    <div class="card-body py-3">
+      <div class="d-flex align-items-start mb-2">
+        <span class="badge bg-primary rounded-pill me-2 mt-1" style="min-width:28px">第{{ q.order }}题</span>
+        <p class="mb-0 fw-medium">{{ q.content }}</p>
+      </div>
+      <textarea name="answer_{{ q.order }}" class="form-control" rows="4" placeholder="请输入你的回答..."></textarea>
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="text-center mt-3">
+    <button type="submit" class="btn btn-primary px-5 py-2 fw-semibold" style="background:linear-gradient(135deg,#4f46e5,#6366f1);border:none">提交全部答案</button>
+  </div>
+</form>
+{% endblock %}

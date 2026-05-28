@@ -2,7 +2,7 @@ import os
 import uuid
 import traceback
 
-from fastapi import APIRouter, Depends, Request, UploadFile, File
+from fastapi import APIRouter, Depends, Form, Request, UploadFile, File
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
@@ -11,6 +11,7 @@ from app.models import Resume
 from app.render import render, get_current_user
 from app.services.document_parser import parse_file
 from app.services.rag_service import chunk_text, build_index, generate_from_resume
+from app.services.scoring_service import score_interview
 
 router = APIRouter(prefix="/resume", tags=["resume"])
 
@@ -19,6 +20,8 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 _index_cache = {}
 _chunks_cache = {}
+_questions_cache = {}
+_results_cache = {}
 MAX_TEXT_LEN = 5000
 
 
@@ -77,8 +80,8 @@ def delete_resume(request: Request, db: Session = Depends(get_db)):
 
   db.query(Resume).filter(Resume.user_id == user.id).delete()
   db.commit()
-  _index_cache.pop(user.id, None)
-  _chunks_cache.pop(user.id, None)
+  for cache in (_index_cache, _chunks_cache, _questions_cache, _results_cache):
+    cache.pop(user.id, None)
   return RedirectResponse(url="/resume/", status_code=302)
 
 
@@ -101,15 +104,73 @@ def resume_interview(request: Request, db: Session = Depends(get_db)):
       _index_cache[user.id] = index
       _chunks_cache[user.id] = chunks
     except Exception as e:
-      traceback.print_exc()
       return render("resume/upload.html", request=request, resume=resume, error=f"向量化失败，请重新上传简历: {e}")
 
   try:
     questions = generate_from_resume(chunks, index, resume.content[:200])
-  except RuntimeError as e:
-    return render("resume/upload.html", request=request, resume=resume, error=str(e))
   except Exception as e:
-    traceback.print_exc()
     return render("resume/upload.html", request=request, resume=resume, error=f"出题失败: {e}")
 
-  return render("resume/interview.html", request=request, questions=questions, filename=resume.filename)
+  _questions_cache[user.id] = questions
+  return RedirectResponse(url="/resume/take", status_code=302)
+
+
+@router.get("/take")
+def resume_take(request: Request):
+  user = get_current_user(request)
+  if not user:
+    return RedirectResponse(url="/auth/login", status_code=302)
+
+  questions = _questions_cache.get(user.id)
+  if not questions:
+    return RedirectResponse(url="/resume/", status_code=302)
+
+  return render("resume/take.html", request=request, questions=questions)
+
+
+@router.post("/submit")
+async def resume_submit(request: Request, db: Session = Depends(get_db)):
+  user = get_current_user(request)
+  if not user:
+    return RedirectResponse(url="/auth/login", status_code=302)
+
+  questions = _questions_cache.get(user.id)
+  if not questions:
+    return RedirectResponse(url="/resume/", status_code=302)
+
+  resume = db.query(Resume).filter(Resume.user_id == user.id).order_by(Resume.id.desc()).first()
+  filename = resume.filename if resume else ""
+
+  form = await request.form()
+  scored = []
+  for q in questions:
+    answer = form.get(f"answer_{q['order']}", "") or ""
+    scored.append({"order": q["order"], "content": q["content"], "answer": answer})
+
+  try:
+    result = score_interview("简历面试 - " + filename, scored)
+    for i, q in enumerate(scored):
+      s = result.get("scores", [])[i] if i < len(result.get("scores", [])) else {}
+      q["score"] = s.get("score", 0)
+      q["comment"] = s.get("comment", "")
+
+    total = sum(q.get("score", 0) for q in scored)
+    total_score = round(total / len(scored), 1) if scored else 0
+  except Exception as e:
+    return render("resume/upload.html", request=request, resume=resume, error=f"评分失败: {e}")
+
+  _results_cache[user.id] = {"results": scored, "total_score": total_score, "filename": filename}
+  return RedirectResponse(url="/resume/result", status_code=302)
+
+
+@router.get("/result")
+def resume_result(request: Request):
+  user = get_current_user(request)
+  if not user:
+    return RedirectResponse(url="/auth/login", status_code=302)
+
+  data = _results_cache.get(user.id)
+  if not data:
+    return RedirectResponse(url="/resume/", status_code=302)
+
+  return render("resume/result.html", request=request, **data)
