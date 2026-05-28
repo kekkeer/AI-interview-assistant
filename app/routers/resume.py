@@ -69,6 +69,19 @@ async def upload_resume(request: Request, file: UploadFile = File(...), db: Sess
   return RedirectResponse(url="/resume/", status_code=302)
 
 
+@router.get("/delete")
+def delete_resume(request: Request, db: Session = Depends(get_db)):
+  user = get_current_user(request)
+  if not user:
+    return RedirectResponse(url="/auth/login", status_code=302)
+
+  db.query(Resume).filter(Resume.user_id == user.id).delete()
+  db.commit()
+  _index_cache.pop(user.id, None)
+  _chunks_cache.pop(user.id, None)
+  return RedirectResponse(url="/resume/", status_code=302)
+
+
 @router.get("/interview")
 def resume_interview(request: Request, db: Session = Depends(get_db)):
   user = get_current_user(request)

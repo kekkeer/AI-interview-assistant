@@ -20,8 +20,11 @@
           <small class="text-muted">{{ resume.content|length }} 字 · 已解析</small>
         </div>
       </div>
-      <a href="/resume/interview" class="btn btn-primary w-100 py-2 fw-semibold" style="background:linear-gradient(135deg,#4f46e5,#6366f1);border:none"
-         onclick="this.innerHTML='<span class=spinner-border spinner-border-sm me-2></span>生成中...';this.style.pointerEvents='none'">开始面试</a>
+      <div class="d-flex gap-2">
+        <a href="/resume/interview" class="btn btn-primary flex-fill py-2 fw-semibold" style="background:linear-gradient(135deg,#4f46e5,#6366f1);border:none"
+           onclick="this.innerHTML='<span class=spinner-border spinner-border-sm me-2></span>生成中...';this.style.pointerEvents='none'">开始面试</a>
+        <a href="/resume/delete" class="btn btn-outline-danger py-2" onclick="return confirm('确定删除简历吗？')">删除</a>
+      </div>
       <p class="text-muted small text-center mt-2 mb-0">AI 将根据你的简历生成 5 道面试题</p>
     </div>
     {% endif %}

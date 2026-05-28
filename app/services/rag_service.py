@@ -31,7 +31,7 @@ def chunk_text(text: str, size: int = 300) -> list[str]:
 
 def build_index(chunks: list[str]):
   model = _get_model()
-  vecs = model.encode(chunks, convert_numpy=True, show_progress_bar=False)
+  vecs = model.encode(chunks, show_progress_bar=False)
   dim = vecs.shape[1]
   index = faiss.IndexFlatL2(dim)
   index.add(vecs)
@@ -40,7 +40,7 @@ def build_index(chunks: list[str]):
 
 def retrieve(index: faiss.IndexFlatL2, chunks: list[str], query: str, k: int = 3) -> list[str]:
   model = _get_model()
-  qv = model.encode([query], convert_numpy=True, show_progress_bar=False)
+  qv = model.encode([query], show_progress_bar=False)
   _, ids = index.search(qv, k)
   return [chunks[i] for i in ids[0] if i < len(chunks)]
 
