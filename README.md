@@ -4,7 +4,10 @@
 
 ---
 
+## 功能特性
+
 - **AI 智能出题** — 根据职位要求自动生成 5 道面试题，贴近真实面试场景
+- **简历 RAG 面试** — 上传 PDF / DOCX 简历，AI 解析简历内容并生成个性化面试题
 - **逐题作答** — 每题独立作答，支持上下题切换，答案自动保存
 - **AI 多维评分** — 深度 / 表达 / 逻辑 / 实用 4 维度评分 + 针对性评语
 - **职位管理** — 5 个内置职位（Java后端 / 前端 / 测试 / 产品 / 算法）+ 自定义职位
@@ -25,6 +28,8 @@
 | 图表 | Chart.js |
 | AI 接口 | DeepSeek API（OpenAI 兼容）|
 | 认证 | JWT (python-jose) + bcrypt |
+| 向量检索 | sentence-transformers + FAISS |
+| 文档解析 | pdfplumber（PDF）、python-docx（DOCX）|
 | 部署 | Railway / Render / Zeabur |
 
 ---
@@ -54,7 +59,7 @@ cp .env.example .env
 uvicorn app.main:app --reload
 ```
 
-
+首次启动时会自动下载 sentence-transformers 模型（~80MB），请保持网络畅通。
 
 ---
 
@@ -79,19 +84,28 @@ ai-interview/
 │   ├── render.py            # 模板渲染 + 当前用户注入
 │   ├── models/              # 数据模型
 │   │   ├── user.py          # User
-│   │   └── interview.py     # Position / Interview / Question
+│   │   ├── interview.py     # Position / Interview / Question
+│   │   └── resume.py        # Resume（简历 RAG）
 │   ├── routers/             # 路由
 │   │   ├── auth.py          # 注册 / 登录 / 登出 / 修改密码
 │   │   ├── positions.py     # 职位列表 / 创建 / 出题
 │   │   ├── interview.py     # 答题 / 评分 / 结果 / 历史
-│   │   └── dashboard.py     # 数据看板
+│   │   ├── dashboard.py     # 数据看板
+│   │   └── resume.py        # 简历上传 / RAG 面试 / 评分
 │   ├── services/            # 业务逻辑
 │   │   ├── auth_service.py  # 密码哈希 / JWT
 │   │   ├── ai_service.py    # DeepSeek 出题
 │   │   ├── scoring_service.py # AI 评分
-│   │   └── seed.py          # 种子数据
+│   │   ├── rag_service.py   # 简历 chunk / embedding / FAISS 检索 / 出题
+│   │   ├── document_parser.py # PDF + DOCX 解析
+│   │   └── seed.py          # 种子数据（5个内置职位）
 │   ├── templates/           # HTML 模板
+│   │   ├── auth/            # 登录 / 注册
+│   │   ├── interview/       # 答题 / 结果
+│   │   ├── positions/       # 职位列表 / 创建
+│   │   └── resume/          # 简历上传 / RAG 答题 / 结果
 │   └── static/              # CSS 样式
+├── docs/                    # 截图
 ├── requirements.txt
 ├── Procfile                 # 部署配置
 └── README.md
