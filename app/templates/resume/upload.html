@@ -20,14 +20,16 @@
           <small class="text-muted">{{ resume.content|length }} 字 · 已解析</small>
         </div>
       </div>
-      <a href="/resume/interview" class="btn btn-primary w-100 py-2 fw-semibold" style="background:linear-gradient(135deg,#4f46e5,#6366f1);border:none">开始面试</a>
+      <a href="/resume/interview" class="btn btn-primary w-100 py-2 fw-semibold" style="background:linear-gradient(135deg,#4f46e5,#6366f1);border:none"
+         onclick="this.innerHTML='<span class=spinner-border spinner-border-sm me-2></span>生成中...';this.style.pointerEvents='none'">开始面试</a>
       <p class="text-muted small text-center mt-2 mb-0">AI 将根据你的简历生成 5 道面试题</p>
     </div>
     {% endif %}
 
     <div class="card border-0 shadow-sm rounded-4 p-4">
       <h6 class="fw-bold mb-3">{% if resume %}更新简历{% else %}上传简历{% endif %}</h6>
-      <form method="post" action="/resume/upload" enctype="multipart/form-data">
+      <form method="post" action="/resume/upload" enctype="multipart/form-data"
+            onsubmit="var btn=this.querySelector('button[type=submit]');btn.disabled=true;btn.innerHTML='<span class=spinner-border spinner-border-sm me-2></span>解析中...'">
         <div class="mb-3">
           <input type="file" name="file" class="form-control" accept=".pdf,.docx" required>
         </div>

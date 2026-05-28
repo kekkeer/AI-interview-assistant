@@ -1,7 +1,8 @@
 import os
 import uuid
+import traceback
 
-from fastapi import APIRouter, Depends, Form, Request, UploadFile, File
+from fastapi import APIRouter, Depends, Request, UploadFile, File
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
@@ -18,6 +19,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 _index_cache = {}
 _chunks_cache = {}
+MAX_TEXT_LEN = 5000
 
 
 @router.get("/")
@@ -50,14 +52,19 @@ async def upload_resume(request: Request, file: UploadFile = File(...), db: Sess
   except Exception as e:
     return render("resume/upload.html", request=request, resume=None, error=f"解析失败: {e}")
 
+  text = text[:MAX_TEXT_LEN]
   resume = Resume(user_id=user.id, filename=file.filename, content=text, status="parsed")
   db.add(resume)
   db.commit()
 
-  chunks = chunk_text(text)
-  index, _ = build_index(chunks)
-  _index_cache[user.id] = index
-  _chunks_cache[user.id] = chunks
+  try:
+    chunks = chunk_text(text)
+    index, _ = build_index(chunks)
+    _index_cache[user.id] = index
+    _chunks_cache[user.id] = chunks
+  except Exception as e:
+    traceback.print_exc()
+    return render("resume/upload.html", request=request, resume=resume, error=f"向量化失败: {e}")
 
   return RedirectResponse(url="/resume/", status_code=302)
 
@@ -75,14 +82,21 @@ def resume_interview(request: Request, db: Session = Depends(get_db)):
   index = _index_cache.get(user.id)
   chunks = _chunks_cache.get(user.id)
   if index is None or chunks is None:
-    chunks = chunk_text(resume.content)
-    index, _ = build_index(chunks)
-    _index_cache[user.id] = index
-    _chunks_cache[user.id] = chunks
+    try:
+      chunks = chunk_text(resume.content)
+      index, _ = build_index(chunks)
+      _index_cache[user.id] = index
+      _chunks_cache[user.id] = chunks
+    except Exception as e:
+      traceback.print_exc()
+      return render("resume/upload.html", request=request, resume=resume, error=f"向量化失败，请重新上传简历: {e}")
 
   try:
     questions = generate_from_resume(chunks, index, resume.content[:200])
   except RuntimeError as e:
     return render("resume/upload.html", request=request, resume=resume, error=str(e))
+  except Exception as e:
+    traceback.print_exc()
+    return render("resume/upload.html", request=request, resume=resume, error=f"出题失败: {e}")
 
   return render("resume/interview.html", request=request, questions=questions, filename=resume.filename)
