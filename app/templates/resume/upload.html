@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+
+    <h2 class="fw-bold mb-1">简历面试</h2>
+    <p class="text-muted small mb-4">上传你的简历，AI 会根据简历内容生成个性化面试题</p>
+
+    {% if error %}
+    <div class="alert alert-danger py-2 small">{{ error }}</div>
+    {% endif %}
+
+    {% if resume and resume.status == "parsed" %}
+    <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
+      <div class="d-flex align-items-center mb-3">
+        <div class="rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width:44px;height:44px;background:var(--primary-light);color:var(--primary);font-weight:700;font-size:18px">📄</div>
+        <div>
+          <h6 class="fw-bold mb-0">{{ resume.filename }}</h6>
+          <small class="text-muted">{{ resume.content|length }} 字 · 已解析</small>
+        </div>
+      </div>
+      <a href="/resume/interview" class="btn btn-primary w-100 py-2 fw-semibold" style="background:linear-gradient(135deg,#4f46e5,#6366f1);border:none">开始面试</a>
+      <p class="text-muted small text-center mt-2 mb-0">AI 将根据你的简历生成 5 道面试题</p>
+    </div>
+    {% endif %}
+
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+      <h6 class="fw-bold mb-3">{% if resume %}更新简历{% else %}上传简历{% endif %}</h6>
+      <form method="post" action="/resume/upload" enctype="multipart/form-data">
+        <div class="mb-3">
+          <input type="file" name="file" class="form-control" accept=".pdf,.docx" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2">上传并解析</button>
+      </form>
+      <p class="text-muted small text-center mt-2 mb-0">支持 PDF / DOCX 格式</p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

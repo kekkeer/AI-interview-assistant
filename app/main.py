@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from app.config import settings
 from app.database import engine, Base
 from app.render import render
-from app.routers import auth, positions, interview, dashboard
+from app.routers import auth, positions, interview, dashboard, resume
 from app.services.seed import seed_positions
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -29,6 +29,7 @@ app.include_router(auth.router)
 app.include_router(positions.router)
 app.include_router(interview.router)
 app.include_router(dashboard.router)
+app.include_router(resume.router)
 
 
 @app.exception_handler(404)
